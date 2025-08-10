@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-// const spotifyRoute = require('./routes/spotify-routes')
+const apiRoutes = require('./routes');
 
 
 dotenv.config();
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// app.use('/spotify',spotifyRoute);
+app.use('/api',apiRoutes);
 
 
 app.listen(process.env.PORT, () => {
