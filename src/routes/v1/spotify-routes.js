@@ -1,7 +1,6 @@
 const express = require('express');
 const axios = require('axios');
 const crypto = require('crypto');
-const { error } = require('console');
 
 const router = express.Router();
 
@@ -13,7 +12,7 @@ router.get('/login', function(req, res) {
   const cookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'Strict',
+    path: '/spotify',
     expires: new Date(Date.now() + 60 * 60 * 1000) // 1 hour
   };
 
@@ -42,12 +41,19 @@ router.get('/callback', async (req, res) => {
     return res.status(400).json({ error: 'Missing code or state parameter' });
   }
 
-  const stateValue = req.cookies.stateValue;
+  const storedState = req.cookies.stateValue;
 
-  if (state !== stateValue) {
+  if(!storedState){
+    return res.status(400).json({
+      error: 'Missing state value cookie'
+    })
+  }
+
+  res.clearCookie('stateValue');
+  if (state !== storedState) {
     return res.status(403).json({ error: 'State mismatch' });
   }
-  res.clearCookie('stateValue');
+
   try {
     const response = await axios.post('https://accounts.spotify.com/api/token', {
       grant_type: 'authorization_code',
@@ -69,7 +75,7 @@ router.get('/callback', async (req, res) => {
     const refreshTokenCookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict',
+      path:'/spotify',
       expires: new Date(Date.now() + 60 * 60 * 24 * 30) // 30 days
     };
     res.cookie('spotifyRefreshToken', refreshToken, refreshTokenCookieOptions);
@@ -82,7 +88,7 @@ router.get('/callback', async (req, res) => {
 
 
 // Function to get access token using refresh token
-async function getAccessToken() {
+async function getAccessToken(req) {
   try {
 
     const refreshToken = req.cookies.spotifyRefreshToken;
@@ -107,7 +113,7 @@ async function getAccessToken() {
 // Main Spotify endpoint
 router.get('/main', async (req, res) => {
   try {
-    const token = await getAccessToken();
+    const token = await getAccessToken(req);
     
     // Get all required data in parallel
     const [topTracks, currentTrack, followedArtists] = await Promise.all([

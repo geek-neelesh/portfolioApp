@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const apiRoutes = require('./routes');
-
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
@@ -11,6 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
+app.use(cookieParser());
 
 app.use('/api',apiRoutes);
 
