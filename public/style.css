@@ -71,3 +71,29 @@ section {
     text-decoration: none;
     font-weight: bold;
 }
+
+.spotify-btn {
+    display: inline-block;
+    background: #1db954;
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    margin: 0.5rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.spotify-btn:hover {
+    background: #1ed760;
+    color: white;
+}
+
+#spotify-status {
+    text-align: center;
+    font-weight: bold;
+}
+
+#spotify-controls {
+    margin-top: 1rem;
+}

@@ -18,6 +18,9 @@
     </header>
 
     <main>
+        <!-- Spotify Connection Status -->
+        <div id="spotify-status" style="display: none; padding: 1rem; margin: 1rem; border-radius: 8px;"></div>
+
         <section id="hero">
             <h1>Neelesh</h1>
             <p>Full Stack Developer</p>
@@ -33,7 +36,12 @@
             <div class="project">
                 <h3>Spotify API Integration</h3>
                 <p>A real-time Spotify dashboard showing my music activity.</p>
-                <a href="/api/v1/spotify/login" target="_blank">View API →</a>
+                
+                <!-- Spotify Connection Button -->
+                <div id="spotify-controls">
+                    <a href="/api/v1/spotify/login" class="spotify-btn">Connect to Spotify</a>
+                    <a href="/api/v1/spotify/main" target="_blank" class="spotify-btn" style="display: none;" id="view-data-btn">View Spotify Data</a>
+                </div>
             </div>
         </section>
 
@@ -43,5 +51,7 @@
             <p>GitHub: https://github.com/geek-neeleshs</p>
         </section>
     </main>
+
+    <script src="script.js"></script>
 </body>
 </html>

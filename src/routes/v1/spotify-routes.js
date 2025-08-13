@@ -11,8 +11,8 @@ router.get('/login', function(req, res) {
 
   const cookieOptions = {
     httpOnly: true,
-    secure: true,
-    path: '/spotify',
+    // secure: true,
+    path: '/api/v1/spotify',
     expires: new Date(Date.now() + 60 * 60 * 1000) // 1 hour
   };
 
@@ -32,6 +32,7 @@ router.get('/login', function(req, res) {
     redirect_uri: process.env.SPOTIFY_CALLBACK_URL,
     state: state
   })
+  console.log(req.cookies.stateValue);
   res.redirect('https://accounts.spotify.com/authorize?' + queryString.toString());
 });
 
@@ -40,8 +41,9 @@ router.get('/callback', async (req, res) => {
   if (!code || !state) {
     return res.status(400).json({ error: 'Missing code or state parameter' });
   }
-
+  console.log(state,"--->state")
   const storedState = req.cookies.stateValue;
+  console.log(storedState)
 
   if(!storedState){
     return res.status(400).json({
@@ -74,12 +76,13 @@ router.get('/callback', async (req, res) => {
 
     const refreshTokenCookieOptions = {
       httpOnly: true,
-      secure: true,
-      path:'/spotify',
+      // secure: true,
+      sameSite: 'Strict',
+      path:'/api/v1/spotify',
       expires: new Date(Date.now() + 60 * 60 * 24 * 30) // 30 days
     };
     res.cookie('spotifyRefreshToken', refreshToken, refreshTokenCookieOptions);
-    res.redirect('/main'+ '?refresh_token=' + refreshToken);
+    res.redirect('/?spotify_connected=true');
 
   } catch (error) {
     res.status(500).json({ error: error.message });
